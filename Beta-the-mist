@@ -394,7 +394,7 @@ end
 
 -- Intro animation
 local function playIntro()
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad)
+    local tweenInfo = TweenInfo.new(0.7, Enum.EasingStyle.Quad)
     TweenService:Create(mf, TweenInfo.new(2), {BackgroundTransparency = 0.1}):Play()
     TweenService:Create(gl, TweenInfo.new(2), {ImageTransparency = 0.5}):Play()
     wait(0.5)
@@ -427,7 +427,7 @@ end
 
 -- Outro animation
 local function playOutro()
-    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad)
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad)
     local initialOffset = scaleOffset
 
     TweenService:Create(cr, tweenInfo, {Position = UDim2.new(finalPositions.cr.X.Scale, finalPositions.cr.X.Offset, finalPositions.cr.Y.Scale + initialOffset, finalPositions.cr.Y.Offset), TextTransparency = 1}):Play()
@@ -454,60 +454,119 @@ local function playOutro()
     wait(0.1)
     TweenService:Create(ti, tweenInfo, {Position = UDim2.new(finalPositions.ti.X.Scale, finalPositions.ti.X.Offset, finalPositions.ti.Y.Scale + initialOffset, finalPositions.ti.Y.Offset), TextTransparency = 1}):Play()
     wait(0.1)
-    TweenService:Create(mf, TweenInfo.new(1), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(gl, TweenInfo.new(1), {ImageTransparency = 1}):Play()
-    wait(1)
+    TweenService:Ceate(mf, TweenInfo.new(1.5), {BackgroundTransparency = 1}):Play()
+    TweenService:Create(gl, TweenInfo.new(1.5), {ImageTransparency = 1}):Play()
+    wait(1.5)
     pg:Destroy()
     sg:Destroy()
 end
 
--- Minimize function (updated to keep background invisible)
+-- Minimize function with updated animation
 local function minimize()
     minLabel.Visible = true
-    tween(mf, {Size = UDim2.new(0, 50, 0, 50)}, 0.5)
-    tween(mf.UICorner, {CornerRadius = UDim.new(0, 25)}, 0.5)
-    tween(minLabel, {TextTransparency = 0}, 0.5)
+    minLabel.TextTransparency = 1
+    minLabel.TextScaled = false
+    minLabel.TextSize = 20
+
+    -- Collect elements to fade out
+    local elementsToFade = {}
     for _, child in pairs(mf:GetChildren()) do
         if child ~= minLabel and child:IsA("GuiObject") then
-            local props = getTransparencyProps(child)
-            if props then
-                tween(child, props, 0.5)
+            table.insert(elementsToFade, child)
+        end
+    end
+
+    -- Sort by Y position (higher Y first for bottom-to-top fade)
+    table.sort(elementsToFade, function(a, b)
+        local aY = a.Position.Y.Scale * mf.AbsoluteSize.Y + a.Position.Y.Offset
+        local bY = b.Position.Y.Scale * mf.AbsoluteSize.Y + b.Position.Y.Offset
+        return aY > bY
+    end)
+
+    -- Apply staggered fade-out
+    local delayTime = 0.1
+    local tweenDuration = 0.5
+    for i, elem in ipairs(elementsToFade) do
+        local props = getTransparencyProps(elem)
+        if props then
+            task.delay((i-1) * delayTime, function()
+                tween(elem, props, tweenDuration, Enum.EasingStyle.Sine)
+            end)
+        end
+    end
+
+    -- Calculate total fade-out time
+    local totalFadeTime = (#elementsToFade - 1) * delayTime + tweenDuration
+
+    -- Wait for fade-out, then shrink frame and fade in minLabel
+    task.delay(totalFadeTime + 0.1, function() -- Added 0.1s pause for clarity
+        local sizeTween = tween(mf, {Size = UDim2.new(0, 50, 0, 50)}, 1, Enum.EasingStyle.Back)
+        tween(mf.UICorner, {CornerRadius = UDim.new(0, 25)}, 1)
+        sizeTween.Completed:Connect(function()
+            tween(minLabel, {TextTransparency = 0, TextSize = 24}, 0.5, Enum.EasingStyle.Quad)
+            for _, elem in pairs(elementsToFade) do
+                elem.Visible = false
             end
-        end
-    end
-    task.wait(0.5)
-    for _, child in pairs(mf:GetChildren()) do
-        if child ~= minLabel and child:IsA("GuiObject") then
-            child.Visible = false
-        end
-    end
+        end)
+    end)
+
     disconnectDragEvents()
     connectDragEvents(minLabel)
-    -- Removed BackgroundColor3 and BackgroundTransparency changes to keep it invisible
 end
 
 -- Restore function
 local function restore()
+    -- Make elements visible and set initial transparency to 1
     for _, child in pairs(mf:GetChildren()) do
         if child ~= minLabel and child:IsA("GuiObject") then
             child.Visible = true
-        end
-    end
-    tween(mf, {Size = UDim2.new(0.6, 0, 0.6, 0)}, 0.5)
-    tween(mf.UICorner, {CornerRadius = UDim.new(0, 15)}, 0.5)
-    tween(minLabel, {TextTransparency = 1}, 0.5)
-    for _, obj in pairs(mf:GetDescendants()) do
-        if obj:IsA("GuiObject") and obj ~= minLabel then
-            local finalProps = finalTransparencies[obj] or {}
-            if obj.Parent == slf and obj:IsA("TextButton") then
-                finalProps = {BackgroundTransparency = 0.3, TextTransparency = 0}
+            if child:IsA("TextLabel") then
+                child.TextTransparency = 1
+            elseif child:IsA("TextButton") or child:IsA("TextBox") then
+                child.BackgroundTransparency = 1
+                child.TextTransparency = 1
+            elseif child:IsA("Frame") or child:IsA("ScrollingFrame") then
+                child.BackgroundTransparency = 1
+            elseif child:IsA("ImageLabel") then
+                child.ImageTransparency = 1
             end
-            tween(obj, finalProps, 0.5)
         end
     end
-    task.wait(0.5)
+
+    local sizeTween = tween(mf, {Size = UDim2.new(0.6, 0, 0.6, 0)}, 1, Enum.EasingStyle.Quad)
+    tween(mf.UICorner, {CornerRadius = UDim.new(0, 15)}, 1)
+    tween(minLabel, {TextTransparency = 1, TextSize = 20}, 0.5)
+
+    -- Collect elements to fade in
+    local elementsToFade = {}
+    for _, child in pairs(mf:GetChildren()) do
+        if child ~= minLabel and child:IsA("GuiObject") then
+            table.insert(elementsToFade, child)
+        end
+    end
+
+    -- Sort by Y position (lower Y first for top-to-bottom fade)
+    table.sort(elementsToFade, function(a, b)
+        local aY = a.Position.Y.Scale * mf.AbsoluteSize.Y + a.Position.Y.Offset
+        local bY = b.Position.Y.Scale * mf.AbsoluteSize.Y + b.Position.Y.Offset
+        return aY < bY
+    end)
+
+    -- Apply staggered fade-in
+    local delayTime = 0.1
+    for i, elem in ipairs(elementsToFade) do
+        local finalProps = finalTransparencies[elem] or {}
+        if elem.Parent == slf and elem:IsA("TextButton") then
+            finalProps = {BackgroundTransparency = 0.3, TextTransparency = 0}
+        end
+        task.delay((i-1) * delayTime, function()
+            tween(elem, finalProps, 0.5)
+        end)
+    end
+
+    -- Wait for size tween to finish before hiding minLabel
+    sizeTween.Completed:Wait()
     minLabel.Visible = false
-    minLabel.BackgroundTransparency = 1
     disconnectDragEvents()
     connectDragEvents(mf)
 end
