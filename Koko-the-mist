@@ -6,7 +6,7 @@ if not PlayerGui then return end
 
 -- Define allowed user IDs for access control
 local allowedUserIDs = {
-    [9747238] = true, -- Dio
+    [974723668] = true, -- Dio
     [2909104015] = true, -- koko
 }
 
