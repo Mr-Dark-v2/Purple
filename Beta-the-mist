@@ -1,4 +1,5 @@
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui", 5) or (warn("PlayerGui not found!") and nil)
@@ -98,7 +99,7 @@ mf.Position = UDim2.new(0.5, 0, 0.5, 0)
 mf.Size = UDim2.new(0.6, 0, 0.6, 0)
 mf.AnchorPoint = Vector2.new(0.5, 0.5)
 mf.BackgroundTransparency = 1
-mf.Active = true  -- Required for input events
+mf.Active = true
 Instance.new("UICorner", mf).CornerRadius = UDim.new(0, 15)
 Instance.new("UIGradient", mf).Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, colors.gs),
@@ -143,8 +144,8 @@ mb.BackgroundTransparency = 1
 mb.TextTransparency = 1
 Instance.new("UICorner", mb).CornerRadius = UDim.new(0, 8)
 
--- Fixed: minLabel is now a TextLabel instead of TextButton
-local minLabel = Instance.new("TextLabel", mf)
+-- Minimized label as a TextButton
+local minLabel = Instance.new("TextButton", mf)
 minLabel.Name = "MinLabel"
 minLabel.Size = UDim2.new(1, 0, 1, 0)
 minLabel.Text = "Mist"
@@ -152,6 +153,8 @@ minLabel.TextColor3 = colors.tx
 minLabel.BackgroundTransparency = 1
 minLabel.TextTransparency = 1
 minLabel.Visible = false
+minLabel.AutoButtonColor = false
+minLabel.ZIndex = 10
 
 local seb = Instance.new("TextButton", mf)
 seb.Position = UDim2.new(0, 10, 0.05, 0)
@@ -230,44 +233,52 @@ cr.TextTransparency = 1
 cr.Font = Enum.Font.SourceSans
 cr.TextSize = 14
 
--- Add dragging functionality
-local dragging
-local dragStart
-local startPos
-local clickThreshold = 5
+-- Dragging logic
+local dragging = false
+local dragStart = nil
+local startPos = nil
+local clickThreshold = UserInputService.TouchEnabled and 15 or 5
+local dragConnections = {}
 
-mf.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = false
-        dragStart = input.Position
-        startPos = mf.Position
-    end
-end)
-
-mf.InputChanged:Connect(function(input)
-    if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and dragStart then
-        local delta = input.Position - dragStart
-        if not dragging and delta.Magnitude > clickThreshold then
-            dragging = true
+local function connectDragEvents(obj)
+    table.insert(dragConnections, obj.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+            dragStart = input.Position
+            startPos = mf.Position
         end
-        if dragging then
-            mf.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end
-end)
+    end))
 
--- Fixed: Handle restore on tap when minimized
-mf.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        if not dragging and minLabel.Visible then
-            restore()
+    table.insert(dragConnections, obj.InputChanged:Connect(function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and dragStart then
+            local delta = input.Position - dragStart
+            if not dragging and delta.Magnitude > clickThreshold then
+                dragging = true
+            end
+            if dragging then
+                mf.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+            end
         end
-        dragging = false
-        dragStart = nil
-    end
-end)
+    end))
 
--- Define final positions for all GUI elements
+    table.insert(dragConnections, obj.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+            dragStart = nil
+        end
+    end))
+end
+
+local function disconnectDragEvents()
+    for _, conn in pairs(dragConnections) do
+        conn:Disconnect()
+    end
+    dragConnections = {}
+end
+
+connectDragEvents(mf)
+
+-- Final positions for GUI elements
 local finalPositions = {
     ti = UDim2.new(0, 0, 0.05, 0),
     cb = UDim2.new(1, -40, 0.05, 0),
@@ -282,7 +293,7 @@ local finalPositions = {
     cr = UDim2.new(0, 0, 0.95, 0)
 }
 
--- Set initial positions slightly offset for intro animation
+-- Set initial positions for intro animation
 local scaleOffset = 0.02
 ti.Position = UDim2.new(finalPositions.ti.X.Scale, finalPositions.ti.X.Offset, finalPositions.ti.Y.Scale + scaleOffset, finalPositions.ti.Y.Offset)
 slf.Position = UDim2.new(finalPositions.slf.X.Scale, finalPositions.slf.X.Offset, finalPositions.slf.Y.Scale + scaleOffset, finalPositions.slf.Y.Offset)
@@ -304,11 +315,9 @@ local scripts = {
 }
 
 local selectedScript
-
--- Flag to track initial load
 local isInitialLoad = true
 
--- Final transparencies for restoring GUI elements
+-- Final transparencies for GUI elements
 local finalTransparencies = {
     [gl] = {ImageTransparency = 0.5},
     [ti] = {TextTransparency = 0},
@@ -324,7 +333,7 @@ local finalTransparencies = {
     [cr] = {TextTransparency = 0},
 }
 
--- Function to get transparency properties for tweening
+-- Function to get transparency properties
 local function getTransparencyProps(obj)
     if obj:IsA("TextLabel") then
         return {TextTransparency = 1}
@@ -338,7 +347,7 @@ local function getTransparencyProps(obj)
     return {}
 end
 
--- Create script buttons with fade animations
+-- Create script buttons
 local function createScriptOptions(filter)
     for _, c in pairs(slf:GetChildren()) do
         if c:IsA("TextButton") then
@@ -452,7 +461,7 @@ local function playOutro()
     sg:Destroy()
 end
 
--- Minimize function
+-- Minimize function (updated to keep background invisible)
 local function minimize()
     minLabel.Visible = true
     tween(mf, {Size = UDim2.new(0, 50, 0, 50)}, 0.5)
@@ -472,6 +481,9 @@ local function minimize()
             child.Visible = false
         end
     end
+    disconnectDragEvents()
+    connectDragEvents(minLabel)
+    -- Removed BackgroundColor3 and BackgroundTransparency changes to keep it invisible
 end
 
 -- Restore function
@@ -495,7 +507,12 @@ local function restore()
     end
     task.wait(0.5)
     minLabel.Visible = false
+    minLabel.BackgroundTransparency = 1
+    disconnectDragEvents()
+    connectDragEvents(mf)
 end
+
+minLabel.MouseButton1Click:Connect(restore)
 
 -- Search bar handler with debounce
 local debounceTime = 0.3
