@@ -7,7 +7,7 @@ if not PlayerGui then return end
 -- Define allowed user IDs for access control
 local allowedUserIDs = {
     [974723668] = true,  -- Dio
-    [4249033659] = true  -- Hussam
+    [42490hh9] = true  -- Hussam
 }
 
 -- Function to display temporary messages
