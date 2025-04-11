@@ -392,7 +392,7 @@ local function createScriptOptions(filter)
     end
 end
 
--- Intro animation
+-- Intro animation with adjusted timings
 local function playIntro()
     local tweenInfo = TweenInfo.new(0.7, Enum.EasingStyle.Quad)
     TweenService:Create(mf, TweenInfo.new(2), {BackgroundTransparency = 0.1}):Play()
@@ -425,7 +425,7 @@ local function playIntro()
     TweenService:Create(cr, tweenInfo, {Position = finalPositions.cr, TextTransparency = 0}):Play()
 end
 
--- Outro animation
+-- Outro animation with adjusted timings
 local function playOutro()
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad)
     local initialOffset = scaleOffset
@@ -454,19 +454,19 @@ local function playOutro()
     wait(0.1)
     TweenService:Create(ti, tweenInfo, {Position = UDim2.new(finalPositions.ti.X.Scale, finalPositions.ti.X.Offset, finalPositions.ti.Y.Scale + initialOffset, finalPositions.ti.Y.Offset), TextTransparency = 1}):Play()
     wait(0.1)
-    TweenService:Ceate(mf, TweenInfo.new(1.5), {BackgroundTransparency = 1}):Play()
+    TweenService:Create(mf, TweenInfo.new(1.5), {BackgroundTransparency = 1}):Play()
     TweenService:Create(gl, TweenInfo.new(1.5), {ImageTransparency = 1}):Play()
     wait(1.5)
     pg:Destroy()
     sg:Destroy()
 end
 
--- Minimize function with updated animation
+-- Minimize function with adjusted timings
 local function minimize()
     minLabel.Visible = true
-    minLabel.TextTransparency = 1
-    minLabel.TextScaled = false
-    minLabel.TextSize = 20
+    local sizeTween = tween(mf, {Size = UDim2.new(0, 50, 0, 50)}, 1, Enum.EasingStyle.Back)
+    tween(mf.UICorner, {CornerRadius = UDim.new(0, 25)}, 1)
+    tween(minLabel, {TextTransparency = 0}, 0.5)
 
     -- Collect elements to fade out
     local elementsToFade = {}
@@ -483,38 +483,28 @@ local function minimize()
         return aY > bY
     end)
 
-    -- Apply staggered fade-out
+    -- Apply staggered fade-out with adjusted delay
     local delayTime = 0.1
-    local tweenDuration = 0.5
     for i, elem in ipairs(elementsToFade) do
         local props = getTransparencyProps(elem)
         if props then
             task.delay((i-1) * delayTime, function()
-                tween(elem, props, tweenDuration, Enum.EasingStyle.Sine)
+                tween(elem, props, 0.5)
             end)
         end
     end
 
-    -- Calculate total fade-out time
-    local totalFadeTime = (#elementsToFade - 1) * delayTime + tweenDuration
-
-    -- Wait for fade-out, then shrink frame and fade in minLabel
-    task.delay(totalFadeTime + 0.1, function() -- Added 0.1s pause for clarity
-        local sizeTween = tween(mf, {Size = UDim2.new(0, 50, 0, 50)}, 1, Enum.EasingStyle.Back)
-        tween(mf.UICorner, {CornerRadius = UDim.new(0, 25)}, 1)
-        sizeTween.Completed:Connect(function()
-            tween(minLabel, {TextTransparency = 0, TextSize = 24}, 0.5, Enum.EasingStyle.Quad)
-            for _, elem in pairs(elementsToFade) do
-                elem.Visible = false
-            end
-        end)
-    end)
+    -- Wait for size tween to finish before hiding elements
+    sizeTween.Completed:Wait()
+    for _, elem in pairs(elementsToFade) do
+        elem.Visible = false
+    end
 
     disconnectDragEvents()
     connectDragEvents(minLabel)
 end
 
--- Restore function
+-- Restore function with adjusted timings
 local function restore()
     -- Make elements visible and set initial transparency to 1
     for _, child in pairs(mf:GetChildren()) do
@@ -535,7 +525,7 @@ local function restore()
 
     local sizeTween = tween(mf, {Size = UDim2.new(0.6, 0, 0.6, 0)}, 1, Enum.EasingStyle.Quad)
     tween(mf.UICorner, {CornerRadius = UDim.new(0, 15)}, 1)
-    tween(minLabel, {TextTransparency = 1, TextSize = 20}, 0.5)
+    tween(minLabel, {TextTransparency = 1}, 0.5)
 
     -- Collect elements to fade in
     local elementsToFade = {}
@@ -552,7 +542,7 @@ local function restore()
         return aY < bY
     end)
 
-    -- Apply staggered fade-in
+    -- Apply staggered fade-in with adjusted delay
     local delayTime = 0.1
     for i, elem in ipairs(elementsToFade) do
         local finalProps = finalTransparencies[elem] or {}
