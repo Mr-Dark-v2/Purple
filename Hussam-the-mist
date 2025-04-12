@@ -322,7 +322,7 @@ local function fetchScripts()
         }
     }
     local success, result = pcall(function()
-        local url = "https://raw.githubusercontent.com/YourUsername/TheMistScripts/main/scripts.json"  -- Replace with your GitHub raw URL
+        local url = "https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Hussam-script-list"  -- Replace with your GitHub raw URL
         local response = HttpService:GetAsync(url)
         return HttpService:JSONDecode(response)
     end)
