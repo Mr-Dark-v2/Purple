@@ -147,7 +147,6 @@ mb.BackgroundTransparency = 1
 mb.TextTransparency = 1
 Instance.new("UICorner", mb).CornerRadius = UDim.new(0, 8)
 
--- Minimized label as a TextButton
 local minLabel = Instance.new("TextButton", mf)
 minLabel.Name = "MinLabel"
 minLabel.Size = UDim2.new(1, 0, 1, 0)
@@ -223,7 +222,7 @@ local sp = Instance.new("ImageLabel", mf)
 sp.Position = UDim2.new(0.95, -20, 0.85, 0)
 sp.Size = UDim2.new(0, 20, 0.05, 0)
 sp.BackgroundTransparency = 1
-sp.Image = "rbxassetid://1234567890"  -- Replace with a valid spinner asset ID
+sp.Image = ""  -- Removed invalid asset ID
 sp.ImageTransparency = 1
 
 local cr = Instance.new("TextLabel", mf)
@@ -310,24 +309,47 @@ stl.Position = UDim2.new(finalPositions.stl.X.Scale, finalPositions.stl.X.Offset
 sp.Position = UDim2.new(finalPositions.sp.X.Scale, finalPositions.sp.X.Offset, finalPositions.sp.Y.Scale + scaleOffset, finalPositions.sp.Y.Offset)
 cr.Position = UDim2.new(finalPositions.cr.X.Scale, finalPositions.cr.X.Offset, finalPositions.cr.Y.Scale + scaleOffset, finalPositions.cr.Y.Offset)
 
--- Fetch scripts from GitHub with enhanced debugging
+-- Fetch scripts with fallback
 local scripts
 local function fetchScripts()
     local defaultScripts = {
         {
-            Name = "Default Script",
-            Code = [[print("Failed to load scripts from GitHub")]],
+            Name = "Mist Aimbot",
+            Code = [[loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Aimbot%20v20"))()]],
             Favorite = false,
-            Tooltip = "Fallback script"
+            Tooltip = "Precision targeting"
+        },
+        {
+            Name = "Speed Boost",
+            Code = [[print("Speed Boost Executed")]],
+            Favorite = false,
+            Tooltip = "Increases player speed"
+        },
+        {
+            Name = "Invisible Mode",
+            Code = [[print("Invisible Mode Executed")]],
+            Favorite = false,
+            Tooltip = "Makes player invisible"
+        },
+        {
+            Name = "Fly Hack",
+            Code = [[print("Fly Hack Executed")]],
+            Favorite = false,
+            Tooltip = "Allows flying"
+        },
+        {
+            Name = "ESP",
+            Code = [[print("ESP Executed")]],
+            Favorite = false,
+            Tooltip = "Highlights players"
         }
     }
-    print("[Delta Debug] Starting fetchScripts")
+    print("[Delta Debug] Starting fetch scripts")
     local success, result = pcall(function()
         local url = "https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Hussam-script-list"
         print("[Delta Debug] Fetching URL: " .. url)
         local response = HttpService:GetAsync(url)
         print("[Delta Debug] Response received (first 200 chars): " .. string.sub(response, 1, 200))
-        -- Check if response looks like JSON
         if not string.match(response, "^%s*%[") then
             error("Response is not JSON: starts with " .. string.sub(response, 1, 50))
         end
@@ -338,7 +360,6 @@ local function fetchScripts()
         end
         for i, script in ipairs(decoded) do
             print("[Delta Debug] Script " .. i .. ": Name = " .. tostring(script.Name))
-            -- Validate script fields
             if not script.Name or not script.Code or not script.Tooltip then
                 error("Invalid script at index " .. i .. ": Missing required fields")
             end
@@ -351,9 +372,9 @@ local function fetchScripts()
     else
         warn("[Delta Debug] Fetch failed: " .. tostring(result))
         scripts = defaultScripts
-        print("[Delta Debug] Using defaultScripts")
+        print("[Delta Debug] Using defaultScripts as fallback")
+        showMsg("Fetch Failed", Color3.fromRGB(255, 50, 50), "Using fallback scripts")
     end
-    -- Debug final scripts table
     print("[Delta Debug] Final scripts table:")
     for i, s in ipairs(scripts) do
         print("[Delta Debug] Script " .. i .. ": " .. tostring(s.Name))
