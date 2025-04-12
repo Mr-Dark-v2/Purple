@@ -310,7 +310,7 @@ stl.Position = UDim2.new(finalPositions.stl.X.Scale, finalPositions.stl.X.Offset
 sp.Position = UDim2.new(finalPositions.sp.X.Scale, finalPositions.sp.X.Offset, finalPositions.sp.Y.Scale + scaleOffset, finalPositions.sp.Y.Offset)
 cr.Position = UDim2.new(finalPositions.cr.X.Scale, finalPositions.cr.X.Offset, finalPositions.cr.Y.Scale + scaleOffset, finalPositions.cr.Y.Offset)
 
--- Fetch scripts from GitHub with Delta-specific debugging
+-- Fetch scripts from GitHub with enhanced debugging
 local scripts
 local function fetchScripts()
     local defaultScripts = {
@@ -327,6 +327,10 @@ local function fetchScripts()
         print("[Delta Debug] Fetching URL: " .. url)
         local response = HttpService:GetAsync(url)
         print("[Delta Debug] Response received (first 200 chars): " .. string.sub(response, 1, 200))
+        -- Check if response looks like JSON
+        if not string.match(response, "^%s*%[") then
+            error("Response is not JSON: starts with " .. string.sub(response, 1, 50))
+        end
         local decoded = HttpService:JSONDecode(response)
         print("[Delta Debug] Decoded JSON with " .. #decoded .. " scripts")
         if #decoded == 0 then
