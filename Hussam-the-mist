@@ -312,7 +312,8 @@ local scripts = {
     {Name="auto dribble", Code='loadstring(game:HttpGet("https://pastebin.com/raw/0qPu8dEA"))()', Favorite=false, Tooltip="automatically dribbles"},
     {Name="sterling hub", Code='loadstring(game:HttpGet("https://rawscripts.net/raw/Blue-Lock:-Rivals-Sterling-Hub-Infinite-Spin-29149"))()', Favorite=false, Tooltip="infinit spins"},
     {Name="ESP", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/ESP"))()', Favorite=false, Tooltip="shows players"},
-    {Name="Hitbox", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Hitbox"))()', Favorite=false, Tooltip="expands player's hitbox"}
+    {Name="Hitbox", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Hitbox"))()', Favorite=false, Tooltip="expands player's hitbox"},
+    {Name="animation changer", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/BeemTZy/Motiona/refs/heads/main/source.lua"))()', Favorite=false, Tooltip="changes animation "}
    
 }
 
