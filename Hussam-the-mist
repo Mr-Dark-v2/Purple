@@ -11,7 +11,7 @@ local allowedUserIDs = {
     [4138409476] = true  -- Hussam
 }
 
--- Function to display temporary messages
+-- Function to display temporary messages (replaced with version from second script)
 local function showMsg(msg, color, subtext)
     local gui = Instance.new("ScreenGui", PlayerGui)
     local f = Instance.new("Frame", gui)
@@ -118,8 +118,8 @@ gl.ZIndex = -1
 
 local ti = Instance.new("TextLabel", mf)
 ti.BackgroundTransparency = 1
-ti.Position = UDim2.new(0, 0, 0.05, 0)
-ti.Size = UDim2.new(1, 0, 0.1, 0)
+ti.Position = UDim2.new(0.05, 0, 0.05, 0)
+ti.Size = UDim2.new(0.9, 0, 0.1, 0)
 ti.Text = "The Mist"
 ti.TextColor3 = colors.tx
 ti.TextSize = 30
@@ -127,8 +127,8 @@ ti.Font = Enum.Font.SourceSansBold
 ti.TextTransparency = 1
 
 local cb = Instance.new("TextButton", mf)
-cb.Position = UDim2.new(1, -40, 0.05, 0)
-cb.Size = UDim2.new(0, 30, 0, 30)
+cb.Position = UDim2.new(0.95, -30, 0.05, 0)
+cb.Size = UDim2.new(0.08, 0, 0.08, 0)
 cb.Text = "X"
 cb.TextColor3 = Color3.fromRGB(255, 100, 100)
 cb.BackgroundColor3 = colors.bt
@@ -137,8 +137,8 @@ cb.TextTransparency = 1
 Instance.new("UICorner", cb).CornerRadius = UDim.new(0, 8)
 
 local mb = Instance.new("TextButton", mf)
-mb.Position = UDim2.new(1, -80, 0.05, 0)
-mb.Size = UDim2.new(0, 30, 0, 30)
+mb.Position = UDim2.new(0.85, -30, 0.05, 0)
+mb.Size = UDim2.new(0.08, 0, 0.08, 0)
 mb.Text = "-"
 mb.TextColor3 = colors.tx
 mb.BackgroundColor3 = colors.bt
@@ -146,7 +146,6 @@ mb.BackgroundTransparency = 1
 mb.TextTransparency = 1
 Instance.new("UICorner", mb).CornerRadius = UDim.new(0, 8)
 
--- Minimized label as a TextButton
 local minLabel = Instance.new("TextButton", mf)
 minLabel.Name = "MinLabel"
 minLabel.Size = UDim2.new(1, 0, 1, 0)
@@ -159,8 +158,8 @@ minLabel.AutoButtonColor = false
 minLabel.ZIndex = 10
 
 local seb = Instance.new("TextButton", mf)
-seb.Position = UDim2.new(0, 10, 0.05, 0)
-seb.Size = UDim2.new(0, 30, 0, 30)
+seb.Position = UDim2.new(0.05, 0, 0.05, 0)
+seb.Size = UDim2.new(0.08, 0, 0.08, 0)
 seb.Text = "⚙️"
 seb.TextColor3 = colors.tx
 seb.BackgroundColor3 = colors.bt
@@ -220,7 +219,7 @@ stl.TextTransparency = 1
 
 local sp = Instance.new("ImageLabel", mf)
 sp.Position = UDim2.new(0.95, -20, 0.85, 0)
-sp.Size = UDim2.new(0, 20, 0.05, 0)
+sp.Size = UDim2.new(0.05, 0, 0.05, 0)
 sp.BackgroundTransparency = 1
 sp.Image = "rbxassetid://1234567890"  -- Replace with a valid spinner asset ID
 sp.ImageTransparency = 1
@@ -278,14 +277,12 @@ local function disconnectDragEvents()
     dragConnections = {}
 end
 
-connectDragEvents(mf)
-
--- Final positions for GUI elements
+connectDragEvents(mf)-- Final positions for GUI elements
 local finalPositions = {
-    ti = UDim2.new(0, 0, 0.05, 0),
-    cb = UDim2.new(1, -40, 0.05, 0),
-    mb = UDim2.new(1, -80, 0.05, 0),
-    seb = UDim2.new(0, 10, 0.05, 0),
+    ti = UDim2.new(0.05, 0, 0.05, 0),
+    cb = UDim2.new(0.95, -30, 0.05, 0),
+    mb = UDim2.new(0.85, -30, 0.05, 0),
+    seb = UDim2.new(0.05, 0, 0.05, 0),
     sb = UDim2.new(0.05, 0, 0.15, 0),
     ft = UDim2.new(0.75, 0, 0.15, 0),
     slf = UDim2.new(0.05, 0, 0.25, 0),
@@ -313,8 +310,7 @@ cr.Position = UDim2.new(finalPositions.cr.X.Scale, finalPositions.cr.X.Offset, f
 local scripts = {
     {Name="Mist Aimbot", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Aimbot%20v20"))()', Favorite=false, Tooltip="Precision targeting"},
     {Name="Speed Boost", Code='print("Speed Boost Executed")', Favorite=false, Tooltip="Increases player speed"},
-    {Name="Invisible Mode", Code='print("Invisible Mode Executed")', Favorite=false, Tooltip="Makes player invisible"},
-    {Name="Mist mbot", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Aimbot%20v20"))()', Favorite=false, Tooltip="Precision targeting"}
+    {Name="Invisible Mode", Code='print("Invisible Mode Executed")', Favorite=false, Tooltip="Makes player invisible"}
 }
 
 local selectedScript
@@ -393,7 +389,9 @@ local function createScriptOptions(filter)
             end
         end
     end
-end-- Intro animation
+end
+
+-- Intro animation
 local function playIntro()
     local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Sine)
     TweenService:Create(mf, TweenInfo.new(2), {BackgroundTransparency = 0.1}):Play()
@@ -426,210 +424,203 @@ local function playIntro()
     TweenService:Create(cr, tweenInfo, {Position = finalPositions.cr, TextTransparency = 0}):Play()
 end
 
--- Outro animation
+-- Outro animation (updated with faster final fade-out)
 local function playOutro()
-    local tweenInfo = TweenInfo.new(0.6, Enum.EasingStyle.Sine)
-    local initialOffset = scaleOffset
+    local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Sine)
+    local initialOffset = scaleOffset -- Offset for initial positions
 
-    TweenService:Create(cr, tweenInfo, {Position = UDim2.new(finalPositions.cr.X.Scale, finalPositions.cr.X.Offset, finalPositions.cr.Y.Scale + initialOffset, finalPositions.cr.Y.Offset), TextTransparency = 1}):Play()
-    wait(0.05)
-    TweenService:Create(cb, tweenInfo, {Position = UDim2.new(finalPositions.cb.X.Scale, finalPositions.cb.X.Offset, finalPositions.cb.Y.Scale + initialOffset, finalPositions.cb.Y.Offset), BackgroundTransparency = 1, TextTransparency = 1}):Play()
-    TweenService:Create(mb, tweenInfo, {Position = UDim2.new(finalPositions.mb.X.Scale, finalPositions.mb.X.Offset, finalPositions.mb.Y.Scale + initialOffset, finalPositions.mb.Y.Offset), BackgroundTransparency = 1, TextTransparency = 1}):Play()
-    TweenService:Create(seb, tweenInfo, {Position = UDim2.new(finalPositions.seb.X.Scale, finalPositions.seb.X.Offset, finalPositions.seb.Y.Scale + initialOffset, finalPositions.seb.Y.Offset), BackgroundTransparency = 1, TextTransparency = 1}):Play()
-    wait(0.05)
-    TweenService:Create(stl, tweenInfo, {Position = UDim2.new(finalPositions.stl.X.Scale, finalPositions.stl.X.Offset, finalPositions.stl.Y.Scale + initialOffset, finalPositions.stl.Y.Offset), TextTransparency = 1}):Play()
-    TweenService:Create(sp, tweenInfo, {Position = UDim2.new(finalPositions.sp.X.Scale, finalPositions.sp.X.Offset, finalPositions.sp.Y.Scale + initialOffset, finalPositions.sp.Y.Offset), ImageTransparency = 1}):Play()
-    wait(0.05)
-    TweenService:Create(eb, tweenInfo, {Position = UDim2.new(finalPositions.eb.X.Scale, finalPositions.eb.X.Offset, finalPositions.eb.Y.Scale + initialOffset, finalPositions.eb.Y.Offset), BackgroundTransparency = 1, TextTransparency = 1}):Play()
-    wait(0.05)
-    for _, child in pairs(slf:GetChildren()) do
+    -- Tween credit label out
+    TweenService:Create(cr, tweenInfo, {
+        Position = UDim2.new(finalPositions.cr.X.Scale, finalPositions.cr.X.Offset, finalPositions.cr.Y.Scale + initialOffset, finalPositions.cr.Y.Offset),
+        TextTransparency = 1
+    }):Play()
+    wait(0.1)
+
+    -- Tween close, minimize, settings buttons out simultaneously
+    TweenService:Create(cb, tweenInfo, {
+        Position = UDim2.new(finalPositions.cb.X.Scale, finalPositions.cb.X.Offset, finalPositions.cb.Y.Scale + initialOffset, finalPositions.cb.Y.Offset),
+        BackgroundTransparency = 1,
+        TextTransparency = 1
+    }):Play()
+    TweenService:Create(mb, tweenInfo, {
+        Position = UDim2.new(finalPositions.mb.X.Scale, finalPositions.mb.X.Offset, finalPositions.mb.Y.Scale + initialOffset, finalPositions.mb.Y.Offset),
+        BackgroundTransparency = 1,
+        TextTransparency = 1
+    }):Play()
+    TweenService:Create(seb, tweenInfo, {
+        Position = UDim2.new(finalPositions.seb.X.Scale, finalPositions.seb.X.Offset, finalPositions.seb.Y.Scale + initialOffset, finalPositions.seb.Y.Offset),
+        BackgroundTransparency = 1,
+        TextTransparency = 1
+    }):Play()
+    wait(0.1)
+
+    -- Tween status label and spinner out
+    TweenService:Create(stl, tweenInfo, {
+        Position = UDim2.new(finalPositions.stl.X.Scale, finalPositions.stl.X.Offset, finalPositions.stl.Y.Scale + initialOffset, finalPositions.stl.Y.Offset),
+        TextTransparency = 1
+    }):Play()
+    TweenService:Create(sp, tweenInfo, {
+        Position = UDim2.new(finalPositions.sp.X.Scale, finalPositions.sp.X.Offset, finalPositions.sp.Y.Scale + initialOffset, finalPositions.sp.Y.Offset),
+        ImageTransparency = 1
+    }):Play()
+    wait(0.1)
+
+    -- Tween execute button out
+    TweenService:Create(eb, tweenInfo, {
+        Position = UDim2.new(finalPositions.eb.X.Scale, finalPositions.eb.X.Offset, finalPositions.eb.Y.Scale + initialOffset, finalPositions.eb.Y.Offset),
+        BackgroundTransparency = 1,
+        TextTransparency = 1
+    }):Play()
+    wait(0.1)
+
+    -- Tween script buttons out in reverse order
+    local scriptButtons = slf:GetChildren()
+    for i = #scriptButtons, 1, -1 do
+        local child = scriptButtons[i]
         if child:IsA("TextButton") then
-            TweenService:Create(child, tweenInfo, {BackgroundTransparency = 1, TextTransparency = 1}):Play()
-            wait(0.01)
+            TweenService:Create(child, tweenInfo, {
+                BackgroundTransparency = 1,
+                TextTransparency = 1
+            }):Play()
+            wait(0.03)
         end
     end
-    TweenService:Create(slf, tweenInfo, {Position = UDim2.new(finalPositions.slf.X.Scale, finalPositions.slf.X.Offset, finalPositions.slf.Y.Scale + initialOffset, finalPositions.slf.Y.Offset), BackgroundTransparency = 1}):Play()
-    wait(0.05)
-    TweenService:Create(sb, tweenInfo, {Position = UDim2.new(finalPositions.sb.X.Scale, finalPositions.sb.X.Offset, finalPositions.sb.Y.Scale + initialOffset, finalPositions.sb.Y.Offset), BackgroundTransparency = 1, TextTransparency = 1}):Play()
-    TweenService:Create(ft, tweenInfo, {Position = UDim2.new(finalPositions.ft.X.Scale, finalPositions.ft.X.Offset, finalPositions.ft.Y.Scale + initialOffset, finalPositions.ft.Y.Offset), BackgroundTransparency = 1, TextTransparency = 1}):Play()
-    wait(0.05)
-    TweenService:Create(ti, tweenInfo, {Position = UDim2.new(finalPositions.ti.X.Scale, finalPositions.ti.X.Offset, finalPositions.ti.Y.Scale + initialOffset, finalPositions.ti.Y.Offset), TextTransparency = 1}):Play()
-    wait(0.05)
-    TweenService:Create(mf, TweenInfo.new(1.5), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(gl, TweenInfo.new(1.5), {ImageTransparency = 1}):Play()
-    wait(1.5)
-    pg:Destroy()
-    sg:Destroy()
+
+    -- Tween script list frame out
+    TweenService:Create(slf, tweenInfo, {
+        Position = UDim2.new(finalPositions.slf.X.Scale, finalPositions.slf.X.Offset, finalPositions.slf.Y.Scale + initialOffset, finalPositions.slf.Y.Offset),
+        BackgroundTransparency = 1
+    }):Play()
+    wait(0.1)
+
+    -- Tween search bar and favorite button out
+    TweenService:Create(sb, tweenInfo, {
+        Position = UDim2.new(finalPositions.sb.X.Scale, finalPositions.sb.X.Offset, finalPositions.sb.Y.Scale + initialOffset, finalPositions.sb.Y.Offset),
+        BackgroundTransparency = 1,
+        TextTransparency = 1
+    }):Play()
+    TweenService:Create(ft, tweenInfo, {
+        Position = UDim2.new(finalPositions.ft.X.Scale, finalPositions.ft.X.Offset, finalPositions.ft.Y.Scale + initialOffset, finalPositions.ft.Y.Offset),
+        BackgroundTransparency = 1,
+        TextTransparency = 1
+    }):Play()
+    wait(0.1)
+
+    -- Tween title out
+    TweenService:Create(ti, tweenInfo, {
+        Position = UDim2.new(finalPositions.ti.X.Scale, finalPositions.ti.X.Offset, finalPositions.ti.Y.Scale + initialOffset, finalPositions.ti.Y.Offset),
+        TextTransparency = 1
+    }):Play()
+
+    -- Wait before final tween
+    wait(0.5)
+
+    -- Tween main frame and glow out over 1 second (faster)
+    local tween1 = TweenService:Create(mf, TweenInfo.new(1), {BackgroundTransparency = 1})
+    local tween2 = TweenService:Create(gl, TweenInfo.new(1), {ImageTransparency = 1})
+    tween1:Play()
+    tween2:Play()
+    tween1.Completed:Connect(function()
+        pg:Destroy()
+        sg:Destroy()
+    end)
 end
 
--- Minimize function with script list fade-out
+-- Minimize function
 local function minimize()
-    -- Store the current position before minimizing
     originalPosition = mf.Position
-
-    -- Tween size and position together for a smooth slide to the bottom-right
-    local sizePosTween = TweenService:Create(
-        mf,
-        TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),
-        {
-            Size = UDim2.new(0, 50, 0, 50),
-            Position = UDim2.new(1, -35, 1, -35)
-        }
-    )
+    local sizePosTween = TweenService:Create(mf, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(1, -35, 1, -35)})
     sizePosTween:Play()
-
-    -- Tween the corner radius to make it circular
     tween(mf.UICorner, {CornerRadius = UDim.new(0, 25)}, 1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 
-    -- Collect all elements to fade out, including script list buttons inside slf
     local elementsToFade = {}
     for _, child in pairs(mf:GetChildren()) do
         if child ~= minLabel and child:IsA("GuiObject") then
             table.insert(elementsToFade, child)
-            -- Explicitly include script list buttons within slf
             if child == slf then
                 for _, btn in pairs(slf:GetChildren()) do
-                    if btn:IsA("TextButton") then
-                        table.insert(elementsToFade, btn)
-                    end
+                    if btn:IsA("TextButton") then table.insert(elementsToFade, btn) end
                 end
             end
         end
     end
-
-    -- Sort by Y position (higher Y first for bottom-to-top fade)
     table.sort(elementsToFade, function(a, b)
         local aY = a.Position.Y.Scale * mf.AbsoluteSize.Y + a.Position.Y.Offset
         local bY = b.Position.Y.Scale * mf.AbsoluteSize.Y + b.Position.Y.Offset
         return aY > bY
     end)
 
-    -- Apply staggered fade-out with a small delay for smooth animation
     local delayTime = 0.01
     for i, elem in ipairs(elementsToFade) do
         local props = getTransparencyProps(elem)
-        if next(props) then -- Ensure props table is not empty
-            task.delay((i - 1) * delayTime, function()
-                tween(elem, props, 0.5)
-            end)
+        if next(props) then
+            task.delay((i - 1) * delayTime, function() tween(elem, props, 0.5) end)
         end
     end
 
-    -- When size/position tween completes, show minLabel with a pop effect
     sizePosTween.Completed:Connect(function()
         minLabel.Visible = true
         tween(minLabel, {TextTransparency = 0}, 0.5)
-        local popTween = TweenService:Create(
-            mf,
-            TweenInfo.new(0.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),
-            {Size = UDim2.new(0, 55, 0, 55)}
-        )
+        local popTween = TweenService:Create(mf, TweenInfo.new(0.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Size = UDim2.new(0, 55, 0, 55)})
         popTween:Play()
-        popTween.Completed:Connect(function()
-            tween(mf, {Size = UDim2.new(0, 50, 0, 50)}, 0.2, Enum.EasingStyle.Sine, Enum.EasingDirection.In)
-        end)
+        popTween.Completed:Connect(function() tween(mf, {Size = UDim2.new(0, 50, 0, 50)}, 0.2, Enum.EasingStyle.Sine, Enum.EasingDirection.In) end)
     end)
 
-    -- Wait for size tween to finish before hiding elements
     sizePosTween.Completed:Wait()
-    for _, elem in pairs(elementsToFade) do
-        elem.Visible = false
-    end
-
-    -- Switch dragging from main frame to minimized label
+    for _, elem in pairs(elementsToFade) do elem.Visible = false end
     disconnectDragEvents()
     connectDragEvents(minLabel)
 end
 
--- Restore function with script list fade-in
+-- Restore function
 local function restore()
-    -- Make all elements visible and set initial transparency to fully transparent
     for _, child in pairs(mf:GetChildren()) do
         if child ~= minLabel and child:IsA("GuiObject") then
             child.Visible = true
-            if child:IsA("TextLabel") then
-                child.TextTransparency = 1
-            elseif child:IsA("TextButton") or child:IsA("TextBox") then
-                child.BackgroundTransparency = 1
-                child.TextTransparency = 1
-            elseif child:IsA("Frame") or child:IsA("ScrollingFrame") then
-                child.BackgroundTransparency = 1
-            elseif child:IsA("ImageLabel") then
-                child.ImageTransparency = 1
-            end
-            -- Ensure script list buttons are reset and visible
+            if child:IsA("TextLabel") then child.TextTransparency = 1
+            elseif child:IsA("TextButton") or child:IsA("TextBox") then child.BackgroundTransparency = 1; child.TextTransparency = 1
+            elseif child:IsA("Frame") or child:IsA("ScrollingFrame") then child.BackgroundTransparency = 1
+            elseif child:IsA("ImageLabel") then child.ImageTransparency = 1 end
             if child == slf then
                 for _, btn in pairs(slf:GetChildren()) do
-                    if btn:IsA("TextButton") then
-                        btn.Visible = true
-                        btn.BackgroundTransparency = 1
-                        btn.TextTransparency = 1
-                    end
+                    if btn:IsA("TextButton") then btn.Visible = true; btn.BackgroundTransparency = 1; btn.TextTransparency = 1 end
                 end
             end
         end
     end
 
-    -- Tween size and position back to original
-    local restoreTween = TweenService:Create(
-        mf,
-        TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),
-        {
-            Size = UDim2.new(0.6, 0, 0.6, 0),
-            Position = originalPosition
-        }
-    )
+    local restoreTween = TweenService:Create(mf, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Size = UDim2.new(0.6, 0, 0.6, 0), Position = originalPosition})
     restoreTween:Play()
-
-    -- Tween the corner radius back to normal
     tween(mf.UICorner, {CornerRadius = UDim.new(0, 15)}, 1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
     tween(minLabel, {TextTransparency = 1}, 0.5)
 
-    -- Collect all elements to fade in, including script list buttons
     local elementsToFade = {}
     for _, child in pairs(mf:GetChildren()) do
         if child ~= minLabel and child:IsA("GuiObject") then
             table.insert(elementsToFade, child)
-            -- Explicitly include script list buttons within slf
             if child == slf then
                 for _, btn in pairs(slf:GetChildren()) do
-                    if btn:IsA("TextButton") then
-                        table.insert(elementsToFade, btn)
-                    end
+                    if btn:IsA("TextButton") then table.insert(elementsToFade, btn) end
                 end
             end
         end
     end
-
-    -- Sort by Y position (lower Y first for top-to-bottom fade)
     table.sort(elementsToFade, function(a, b)
         local aY = a.Position.Y.Scale * mf.AbsoluteSize.Y + a.Position.Y.Offset
         local bY = b.Position.Y.Scale * mf.AbsoluteSize.Y + b.Position.Y.Offset
         return aY < bY
     end)
 
-    -- Apply staggered fade-in with specific transparency for script buttons
     local delayTime = 0.05
     for i, elem in ipairs(elementsToFade) do
-        local finalProps
-        -- Special case for script list buttons inside slf
-        if elem.Parent == slf and elem:IsA("TextButton") then
-            finalProps = {BackgroundTransparency = 0.3, TextTransparency = 0}
-        else
-            finalProps = finalTransparencies[elem] or getTransparencyProps(elem)
-        end
-        if next(finalProps) then -- Ensure props table is not empty
-            task.delay((i - 1) * delayTime, function()
-                tween(elem, finalProps, 0.5)
-            end)
+        local finalProps = (elem.Parent == slf and elem:IsA("TextButton")) and {BackgroundTransparency = 0.3, TextTransparency = 0} or finalTransparencies[elem] or getTransparencyProps(elem)
+        if next(finalProps) then
+            task.delay((i - 1) * delayTime, function() tween(elem, finalProps, 0.5) end)
         end
     end
 
-    -- Wait for size tween to finish before hiding minLabel
     restoreTween.Completed:Wait()
     minLabel.Visible = false
-
-    -- Switch dragging back to main frame
     disconnectDragEvents()
     connectDragEvents(mf)
 end
