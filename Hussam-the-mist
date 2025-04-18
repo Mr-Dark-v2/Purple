@@ -8,7 +8,8 @@ if not PlayerGui then return end
 -- Define allowed user IDs for access control
 local allowedUserIDs = {
     [974723668] = true,  -- Dio
-    [4138409476] = true  -- Hussam
+    [4138409476] = true,  -- Hussam main 
+    [8258494466] = true   -- Hussam alt
 }
 
 -- Function to display temporary messages (replaced with version from second script)
