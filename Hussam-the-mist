@@ -9,7 +9,7 @@ if not PlayerGui then return end
 local allowedUserIDs = {
     [974723668] = true,  -- Dio
     [4138409476] = true,  -- Hussam main 
-    [7368811363] = true   -- Hussam alt
+    [736881363] = true   -- Hussam alt
 }
 
 -- Function to display temporary messages (replaced with version from second script)
@@ -315,7 +315,8 @@ local scripts = {
     {Name="ESP", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/ESP"))()', Favorite=false, Tooltip="shows players"},
     {Name="Hitbox", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Hitbox"))()', Favorite=false, Tooltip="expands player's hitbox"},
     {Name="animation changer", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/BeemTZy/Motiona/refs/heads/main/source.lua"))()', Favorite=false, Tooltip="changes animation "},
-    {Name="invisible", Code='loadstring(game:HttpGet("https://pastebin.com/raw/3Rnd9rHf"))()', Favorite=false, Tooltip="you disappear"}
+    {Name="invisible", Code='loadstring(game:HttpGet("https://pastebin.com/raw/3Rnd9rHf"))()', Favorite=false, Tooltip="you disappear"},
+    {Name="mvsd auto kill", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Deni210/murdersvssherrifsduels/main/rubyhub"))()', Favorite=false, Tooltip=" "}
    
    
 }
