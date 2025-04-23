@@ -316,7 +316,9 @@ local scripts = {
     {Name="Hitbox", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Hitbox"))()', Favorite=false, Tooltip="expands player's hitbox"},
     {Name="animation changer", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/BeemTZy/Motiona/refs/heads/main/source.lua"))()', Favorite=false, Tooltip="changes animation "},
     {Name="invisible", Code='loadstring(game:HttpGet("https://pastebin.com/raw/3Rnd9rHf"))()', Favorite=false, Tooltip="you disappear"},
-    {Name="mvsd auto kill", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Deni210/murdersvssherrifsduels/main/rubyhub"))()', Favorite=false, Tooltip=" "}
+    {Name="mvsd auto kill", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Deni210/murdersvssherrifsduels/main/rubyhub"))()', Favorite=false, Tooltip=" "},
+    {Name="MVSD triggerbot v8", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Triggerbotv8%20Hussam"))()', Favorite=true, Tooltip="perfection"}
+   
    
    
 }
