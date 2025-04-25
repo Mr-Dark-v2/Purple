@@ -318,6 +318,7 @@ local scripts = {
     {Name="invisible", Code='loadstring(game:HttpGet("https://pastebin.com/raw/3Rnd9rHf"))()', Favorite=false, Tooltip="you disappear"},
     {Name="mvsd auto kill", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Deni210/murdersvssherrifsduels/main/rubyhub"))()', Favorite=false, Tooltip=" "},
     {Name="MVSD triggerbot v8", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Triggerbotv8%20Hussam"))()', Favorite=true, Tooltip="perfection"}
+    {Name="triggerbot v10", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Triggerbot%20v10"))()', Favorite=true, Tooltip="perfect GUI"}
    
    
    
