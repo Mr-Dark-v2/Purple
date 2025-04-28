@@ -8,14 +8,13 @@ local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui", 5) or (warn("PlayerGui not found!") and nil)
 if not PlayerGui then return end
 
---[[ -- REMOVED ACCESS CONTROL
+-- REMOVED ACCESS CONTROL
 -- Define allowed user IDs for access control
 local allowedUserIDs = {
     [974723668] = true,  -- Dio
     [4138409476] = true,  -- Hussam main
     [736881363] = true   -- Hussam alt
 }
-]]
 
 -- Function to display temporary messages (kept for potential future use, but access messages removed)
 local function showMsg(msg, color, subtext)
@@ -63,7 +62,7 @@ local function showMsg(msg, color, subtext)
     gui:Destroy()
 end
 
---[[ -- REMOVED ACCESS CHECK AND MESSAGES
+-- REMOVED ACCESS CHECK AND MESSAGES
 -- Check if the player has access
 if not allowedUserIDs[player.UserId] then
     showMsg("Access Denied", Color3.fromRGB(255, 50, 50), "Contact Dio for permission")
@@ -71,7 +70,6 @@ if not allowedUserIDs[player.UserId] then
 end
 showMsg("Access Granted", Color3.fromRGB(50, 255, 50), "Welcome back, " .. player.Name)
 wait(0.5)
-]]
 
 -- Color palette
 local colors = {
