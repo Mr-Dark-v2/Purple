@@ -324,8 +324,8 @@ local scripts = {
     {Name="animation changer", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/BeemTZy/Motiona/refs/heads/main/source.lua"))()', Favorite=false, Tooltip="changes animation "},
     {Name="invisible", Code='loadstring(game:HttpGet("https://pastebin.com/raw/3Rnd9rHf"))()', Favorite=false, Tooltip="you disappear"},
     {Name="mvsd auto kill", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Deni210/murdersvssherrifsduels/main/rubyhub"))()', Favorite=false, Tooltip=" "},
-    {Name="triggerbot v21", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/code%20(13).txt"))()', Favorite=true, Tooltip="perfection"},
-    {Name="triggerbot v10", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Triggerbot%20v10"))()', Favorite=true, Tooltip="perfect GUI"}
+    {Name="triggerbot v21", Code='loadstring(game:HttpGet("https://raw.githubom/Mr-Dark-v2/script-ist/refs/heads/code%20(13).txt"))()', Favorite=true, Tooltip="perfection"},
+    {Name="triggerbot v10", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dcript-hall-the_mist/s/main/Trt%20v10"))()', Favorite=true, Tooltip="perfect GUI"}
 }
 
 local selectedScript
