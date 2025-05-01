@@ -316,16 +316,9 @@ cr.Position = UDim2.new(finalPositions.cr.X.Scale, finalPositions.cr.X.Offset, f
 
 -- Script list
 local scripts = {
-    {Name="Mist Aimbot", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Aimbot%20v20"))()', Favorite=false, Tooltip="Precision targeting"},
-    {Name="auto dribble", Code='loadstring(game:HttpGet("https://pastebin.com/raw/0qPu8dEA"))()', Favorite=false, Tooltip="automatically dribbles"},
-    {Name="sterling hub", Code='loadstring(game:HttpGet("https://rawscripts.net/raw/Blue-Lock:-Rivals-Sterling-Hub-Infinite-Spin-29149"))()', Favorite=false, Tooltip="infinit spins"},
-    {Name="ESP", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/ESP"))()', Favorite=false, Tooltip="shows players"},
-    {Name="Hitbox", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Hitbox"))()', Favorite=false, Tooltip="expands player's hitbox"},
-    {Name="animation changer", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/BeemTZy/Motiona/refs/heads/main/source.lua"))()', Favorite=false, Tooltip="changes animation "},
-    {Name="invisible", Code='loadstring(game:HttpGet("https://pastebin.com/raw/3Rnd9rHf"))()', Favorite=false, Tooltip="you disappear"},
-    {Name="mvsd auto kill", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Deni210/murdersvssherrifsduels/main/rubyhub"))()', Favorite=false, Tooltip=" "},
-    {Name="triggerbot v21", Code='loadstring(game:HttpGet("https://raw.githubom/Mr-Dark-v2/script-ist/refs/heads/code%20(13).txt"))()', Favorite=true, Tooltip="perfection"},
-    {Name="triggerbot v10", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dcript-hall-the_mist/s/main/Trt%20v10"))()', Favorite=true, Tooltip="perfect GUI"}
+    {Name="Mist Aimbot dead rails", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall-the_mist/refs/heads/main/Aimbot%20v20"))()', Favorite=false, Tooltip="Precision targeting"},
+    {Name="triggerbot-module v21", Code='loadstring(game:HttpGet("https://pastebin.com/raw/0qPu8dEA"))()', Favorite=false, Tooltip="triggerbot for MVSD"}
+  
 }
 
 local selectedScript
