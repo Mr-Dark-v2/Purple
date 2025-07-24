@@ -317,8 +317,8 @@ cr.Position = UDim2.new(finalPositions.cr.X.Scale, finalPositions.cr.X.Offset, f
 -- Script list
 local scripts = {
     {Name="Mist Aimbot dead rails", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/Aimbot%20v20"))()', Favorite=false, Tooltip="Precision targeting"},
-    {Name="triggerbot-module v21", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/code%20(30).txt"))()', Favorite=false, Tooltip="triggerbot for MVSD"}
-  
+    {Name="triggerbot-module v21", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/code%20(30).txt"))()', Favorite=false, Tooltip="triggerbot for MVSD"},
+    {Name="steal-a-brainroot-module v7", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/Brainroot"))()', Favorite=false, Tooltip="steal like a good boy"}
 }
 
 local selectedScript
