@@ -13,7 +13,7 @@ if not PlayerGui then return end
 local allowedUserIDs = {
     [974723668] = true,  -- Dio
     [9047518213] = true,  -- Hussam main
-    [8997305391] = true   -- Hussam alt
+    [8997305391] = true,   -- Hussam alt
     [1376117332] = true   -- Hussam alt
 }
 
