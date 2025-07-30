@@ -14,7 +14,8 @@ local allowedUserIDs = {
     [974723668] = true,  -- Dio
     [9047518213] = true,  -- Hussam main
     [8997305391] = true,   -- Hussam alt
-    [1376117332] = true   -- Hussam alt
+    [1376117332] = true,  -- Hussam alt
+    [987709690] = true   -- Hussam alt
 }
 
 -- Function to display temporary messages (kept for potential future use, but access messages removed)
