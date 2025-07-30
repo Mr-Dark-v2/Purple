@@ -12,10 +12,10 @@ if not PlayerGui then return end
 -- Define allowed user IDs for access control
 local allowedUserIDs = {
     [974723668] = true,  -- Dio
-    [9047518213] = true,  -- Hussam main
-    [8997305391] = true,   -- Hussam alt
-    [1376117332] = true,  -- Hussam alt
-    [987709690] = true   -- Hussam alt
+    [90475182130] = true,  -- Hussam main
+    [89973053910] = true,   -- Hussam alt
+    [13761173320] = true,  -- Hussam alt
+    [9877096900] = true   -- Hussam alt
 }
 
 -- Function to display temporary messages (kept for potential future use, but access messages removed)
