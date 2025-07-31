@@ -12,7 +12,7 @@ if not PlayerGui then return end
 -- Define allowed user IDs for access control
 local allowedUserIDs = {
     [974723668] = true,  -- Dio
-    [90475182130] = true,  -- Hussam main
+    [3164434241] = true,  -- Hussam main
     [89973053910] = true,   -- Hussam alt
     [13761173320] = true,  -- Hussam alt
     [9877096900] = true   -- Hussam alt
