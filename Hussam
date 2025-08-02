@@ -14,7 +14,7 @@ local allowedUserIDs = {
     [974723668] = true,  -- Dio
     [9061456815] = true,  -- Hussam main
     [9081229294] = true,   -- Hussam alt
-    [8485424496] = true,  -- Hussam alt
+    [84854244960] = true,  -- Hussam alt
     [9877096900] = true   -- Hussam alt
 }
 
