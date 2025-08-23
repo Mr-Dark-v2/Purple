@@ -322,7 +322,7 @@ local scripts = {
     {Name="triggerbot-module v21", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/code%20(30).txt"))()', Favorite=false, Tooltip="triggerbot for MVSD"},
     {Name="steal-a-brainroot-module v7", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/Brainroot"))()', Favorite=false, Tooltip="steal like a good boy"},
     {Name="pet logger demo", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/Pet%20finder%20(%20testing)"))()', Favorite=false, Tooltip="GUI"},
-    {Name="ubg demo", Code='loadstring(game:HttpGet(https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/ubg)"))()', Favorite=false, Tooltip="GUI"}
+    {Name="ubg demo", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/ubg"))()', Favorite=false, Tooltip="GUI"}
 
 
 }
