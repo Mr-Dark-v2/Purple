@@ -324,7 +324,6 @@ local scripts = {
     {Name="pet logger demo", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/Pet%20finder%20(%20testing)"))()', Favorite=false, Tooltip="GUI"},
     {Name="ubg demo", Code='loadstring(game:HttpGet("https://raw.githubusercontent.com/Mr-Dark-v2/script-hall/refs/heads/main/ubg"))()', Favorite=false, Tooltip="GUI"}
 
-
 }
 
 local selectedScript
