@@ -99,11 +99,9 @@ local function findInterceptTime(ballPos, ballVel, playerPos, radius)
 		local pos = ballPos + ballVel * t
 		return (playerPos - pos).Magnitude
 	end
-	local lastDist, foundT = distAt(0), nil
+	local foundT = nil
 	for t = 0, Config.MAX_SCAN_TIME, 0.02 do
-		local d = distAt(t)
-		if d <= radius then foundT = t; break end
-		lastDist = d
+		if distAt(t) <= radius then foundT = t break end
 	end
 	if not foundT then return nil end
 	local low, high = 0, foundT
@@ -161,8 +159,9 @@ RunService.RenderStepped:Connect(function(dt)
 		canBlockGlobal, lastGlobalBlock = false, tick()
 		blockedBalls[ball] = tick()
 		task.spawn(playBlockAnimation)
-		startBlockEvent:FireServer(tick(), ball)
-		blockEvent:FireServer(ball)
+		startBlockEvent:FireServer(os.clock())
+		local direction = (ball.Position - hrp.Position).Unit
+		blockEvent:FireServer(ball, direction)
 		task.delay(Config.GLOBAL_COOLDOWN, function() canBlockGlobal = true end)
 	end
 end)
@@ -178,7 +177,7 @@ end)
 local function createControlGUI()
 	if CoreGui:FindFirstChild("DioDemoGUI") then CoreGui.DioDemoGUI:Destroy() end
 	local gui = Instance.new("ScreenGui")
-	gui.Name = "DioDemoGUI"
+	gui.Name = "public version"
 	gui.ResetOnSpawn = false
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 	gui.Parent = CoreGui
