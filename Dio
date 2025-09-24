@@ -188,8 +188,10 @@ RunService.RenderStepped:Connect(function(dt)
 		lastGlobalBlock = tick()
 		blockedBalls[ball] = tick()
 		task.spawn(playBlockAnimation)
-		startBlockEvent:FireServer(tick(), ball)
-		blockEvent:FireServer(ball)
+
+		startBlockEvent:FireServer(tick())
+		blockEvent:FireServer("Ball", ball.Velocity.Unit)  -- send NAME, not instance
+
 		task.delay(Config.GLOBAL_COOLDOWN, function()
 			canBlockGlobal = true
 		end)
