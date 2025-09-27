@@ -7,7 +7,7 @@
 -- 1. Copy the entire contents of the "ai_studio_code (88).txt" script.
 -- 2. Paste it into a new https://gist.github.com/ or https://pastebin.com/
 -- 3. Get the RAW file link and paste it here.
-local MAIN_SCRIPT_URL = "YOUR_RAW_SCRIPT_URL_HERE" -- e.g., "https://gist.githubusercontent.com/user/id/raw/file.lua"
+local MAIN_SCRIPT_URL = "https://raw.githubusercontent.com/Mr-Dark-v2/Purple/refs/heads/main/Koko"
 
 --==============================================================================
 
