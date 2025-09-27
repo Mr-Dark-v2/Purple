@@ -1,57 +1,42 @@
---==============================================================================
---|| LOADER SCRIPT
---|| This is the new script that should be executed to load the admin system.
---==============================================================================
+-- Self-Reinjecting Loader
 
--- [!] IMPORTANT: CONFIGURE THIS URL
--- 1. Copy the entire contents of the "ai_studio_code (88).txt" script.
--- 2. Paste it into a new https://gist.github.com/ or https://pastebin.com/
--- 3. Get the RAW file link and paste it here.
-local MAIN_SCRIPT_URL = "https://raw.githubusercontent.com/Mr-Dark-v2/Purple/refs/heads/main/Koko"
-
---==============================================================================
-
+local Players = game:GetService("Players")
 local TeleportService = game:GetService("TeleportService")
+local LocalPlayer = Players.LocalPlayer
+local HttpService = game:GetService("HttpService")
 
--- The secret key used to check if a reinjection is needed
-local REINJECT_KEY = "AdminSystemReinject"
+-- Replace with your raw script URL
+local SCRIPT_URL = "https://raw.githubusercontent.com/Mr-Dark-v2/Purple/refs/heads/main/Koko"
 
--- This function downloads and runs the main script
-local function loadMainScript()
-    if not MAIN_SCRIPT_URL or MAIN_SCRIPT_URL == "YOUR_RAW_SCRIPT_URL_HERE" then
-        warn("Admin Loader: Please configure the MAIN_SCRIPT_URL inside the Loader.lua script first!")
-        return
-    end
-
-    task.wait(1) -- Small delay to ensure services are loaded
-    
-    local success, scriptContent = pcall(function()
-        return game:HttpGet(MAIN_SCRIPT_URL .. "?v=" .. math.random()) -- Add random query to prevent caching
+-- Function to execute the main script
+local function executeMainScript()
+    local success, source = pcall(function()
+        return game:HttpGet(SCRIPT_URL)
     end)
-
-    if success and scriptContent then
-        local func, err = loadstring(scriptContent)
+    if success and source then
+        local func, err = loadstring(source)
         if func then
-            -- Run the main script in a protected call to prevent it from crashing the loader
             pcall(func)
         else
-            warn("Admin Loader: Failed to load main script. The script content may be invalid. Error: " .. tostring(err))
+            warn("Failed to load script:", err)
         end
     else
-        warn("Admin Loader: Failed to download main script from the URL. Is the URL correct and raw? Error: " .. tostring(scriptContent))
+        warn("Failed to fetch script")
     end
 end
 
--- Check if we have a reinjection flag from a previous commanded teleport
-local wasRejoin, setting = pcall(function() return TeleportService:GetTeleportSetting(REINJECT_KEY) end)
+-- Initial execution
+executeMainScript()
 
-if wasRejoin and setting == true then
-    -- If the flag exists, it means we were commanded to rejoin.
-    -- We clear the flag for next time...
-    pcall(function() TeleportService:ClearTeleportSetting(REINJECT_KEY) end)
-    -- ...and then load the main script.
-    loadMainScript()
-else
-    -- If this is the first time running (no flag), we just load the main script normally.
-    loadMainScript()
-end
+-- Re-execute on character respawn
+LocalPlayer.CharacterAdded:Connect(function()
+    executeMainScript()
+end)
+
+-- Re-execute on server teleport
+Players.LocalPlayer.OnTeleport:Connect(function(state)
+    if state == Enum.TeleportState.Completed then
+        task.wait(1)
+        executeMainScript()
+    end
+end)
