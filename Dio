@@ -1,14 +1,15 @@
--- Self-Reinjecting Loader
-
+--============================
+--|| SELF-REINJECTING LOADER
+--============================
 local Players = game:GetService("Players")
-local TeleportService = game:GetService("TeleportService")
 local LocalPlayer = Players.LocalPlayer
 local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
 
--- Replace with your raw script URL
+-- Replace this with your raw script URL
 local SCRIPT_URL = "https://raw.githubusercontent.com/Mr-Dark-v2/Purple/refs/heads/main/Koko"
 
--- Function to execute the main script
+-- Function to fetch and execute main script
 local function executeMainScript()
     local success, source = pcall(function()
         return game:HttpGet(SCRIPT_URL)
@@ -28,15 +29,21 @@ end
 -- Initial execution
 executeMainScript()
 
--- Re-execute on character respawn
+-- Re-execute on respawn
 LocalPlayer.CharacterAdded:Connect(function()
     executeMainScript()
 end)
 
--- Re-execute on server teleport
-Players.LocalPlayer.OnTeleport:Connect(function(state)
-    if state == Enum.TeleportState.Completed then
-        task.wait(1)
-        executeMainScript()
+-- Optional: add a manual rejoin command
+local function rejoinServer()
+    TeleportService:Teleport(game.PlaceId, LocalPlayer)
+end
+
+-- Example: Bind to key "R" to rejoin
+local UserInputService = game:GetService("UserInputService")
+UserInputService.InputBegan:Connect(function(input, processed)
+    if processed then return end
+    if input.KeyCode == Enum.KeyCode.R then
+        rejoinServer()
     end
 end)
