@@ -1,4 +1,4 @@
-Character
+...Character
 	if not char or not char:FindFirstChild("Head") then return end
 	local head = char.Head
 	local billboard = head:FindFirstChild("ExcludeLabel")
@@ -1367,3 +1367,4 @@ if script and script:IsA("Script") then
 		if fovCircle and fovCircle.Destroy then fovCircle:Destroy(); fovCircle = nil end
 	end)
 end
+...
